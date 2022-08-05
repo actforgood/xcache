@@ -1,0 +1,7 @@
+port 26379
+sentinel resolve-hostnames yes
+sentinel announce-hostnames yes
+sentinel monitor xcacheMaster xcache-redis6-master 6379 2
+sentinel down-after-milliseconds xcacheMaster 10000
+sentinel failover-timeout xcacheMaster 30000
+sentinel parallel-syncs xcacheMaster 1

@@ -1,0 +1,20 @@
+FROM golang:1.18.3-alpine3.16
+
+LABEL maintainer="Bogdan Constantinescu"
+LABEL description="Benchmark Runner for XCache"
+LABEL license="MIT"
+
+# install dependencies
+RUN apk add --no-cache make build-base
+
+# create app dir
+RUN mkdir /xcache
+
+# copy files to current app dir
+COPY . /xcache/
+
+# move working directory
+WORKDIR /xcache
+
+# run benchmarks
+CMD ["make", "bench-integration"]
