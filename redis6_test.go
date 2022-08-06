@@ -26,14 +26,19 @@ func ExampleRedis6() {
 
 	// save a key for 10 minutes
 	if err := cache.Save(ctx, key, value, ttl); err != nil {
-		fmt.Println(err)
+		fmt.Println("could not save Redis cache key: " + err.Error())
 	}
 
 	// load the key's value
 	if value, err := cache.Load(ctx, key); err != nil {
-		fmt.Println(err)
+		fmt.Println("could not get Redis cache key: " + err.Error())
 	} else {
 		fmt.Println(string(value))
+	}
+
+	// close the cache when no needed anymore/at your application shutdown.
+	if err := cache.Close(); err != nil {
+		fmt.Println("could not close Redis cache: " + err.Error())
 	}
 
 	// should output:
