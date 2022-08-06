@@ -171,6 +171,33 @@ func testMemoryWithXConfConfigIsNotChanged(t *testing.T) {
 	}
 }
 
+func TestMemory_withXConf_concurrency(t *testing.T) {
+	t.Parallel()
+
+	var (
+		memSize      = freecacheMinMem
+		configLoader = xconf.LoaderFunc(func() (map[string]interface{}, error) {
+			if time.Now().Unix()%2 == 0 {
+				memSize += 1
+			}
+
+			return map[string]interface{}{
+				xcache.MemoryCfgKeyMemorySize: memSize,
+			}, nil
+		})
+		config, _ = xconf.NewDefaultConfig(
+			configLoader,
+			xconf.DefaultConfigWithReloadInterval(time.Second),
+		)
+		subject = xcache.NewMemoryWithConfig(config)
+	)
+	defer config.Close()
+
+	testCacheWithXConfConcurrency(subject)(t)
+
+	t.Logf("config changed %d times during test", memSize-freecacheMinMem)
+}
+
 func ExampleMemory_withXConf() {
 	// Setup an env (assuming your application configuration comes from env,
 	// it's not mandatory to be env, you can use any source loader you want)

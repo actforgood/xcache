@@ -9,6 +9,7 @@ import (
 	"context"
 	"errors"
 	"strconv"
+	"sync"
 	"testing"
 	"time"
 
@@ -229,5 +230,55 @@ func testCacheStats(
 		if checkKeys {
 			assertTrue(t, resultStats.Keys >= prevStats.Keys+20)
 		}
+	}
+}
+
+func testCacheWithXConfConcurrency(subject xcache.Cache) func(t *testing.T) {
+	return func(t *testing.T) {
+		// Note: test to be run with -race and see no race conditions occur.
+		// arrange
+		var (
+			commonKey      = "test-concurrency-key"
+			ctx, cancelCtx = context.WithTimeout(context.Background(), 10*time.Second)
+			goroutinesNo   = 200
+			wg             sync.WaitGroup
+		)
+		defer cancelCtx()
+
+		// save a common key that will be accessed
+		err := subject.Save(context.Background(), commonKey, []byte("test value"), 5*time.Minute)
+		requireNil(t, err)
+
+		wg.Add(goroutinesNo)
+		for threadNo := 0; threadNo < goroutinesNo; threadNo++ {
+			go func(ctx context.Context, cache xcache.Cache, waitGr *sync.WaitGroup, thread int) {
+				defer waitGr.Done()
+				for {
+					select {
+					case <-ctx.Done():
+						return
+					default:
+						// cover all APIs of Cache: perform save, load, ttl, stats operations.
+						for i := 0; i < 10; i++ {
+							key := "test-concurrency-key-" + strconv.FormatInt(int64(thread), 10) + "-" + strconv.FormatInt(int64(i), 10)
+							err := cache.Save(context.Background(), key, []byte("test value"), time.Minute)
+							assertNil(t, err)
+							_, err = cache.Load(context.Background(), key)
+							assertNil(t, err)
+							_, err = cache.Load(context.Background(), commonKey)
+							assertNil(t, err)
+							_, err = cache.TTL(context.Background(), key)
+							assertNil(t, err)
+							_, err = cache.TTL(context.Background(), commonKey)
+							assertNil(t, err)
+							_, err = cache.Stats(context.Background())
+							assertNil(t, err)
+						}
+						time.Sleep(100 * time.Millisecond)
+					}
+				}
+			}(ctx, subject, &wg, threadNo)
+		}
+		wg.Wait() // after context deadline expires (10s), goroutines will stop.
 	}
 }

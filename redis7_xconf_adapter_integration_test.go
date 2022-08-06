@@ -152,3 +152,33 @@ func testRedis7WithXConfConfigIsNotChanged(t *testing.T) {
 		assertNil(t, err)
 	}
 }
+
+func TestRedis7_withXConf_concurrency(t *testing.T) {
+	t.Parallel()
+
+	var (
+		readTimeout  = 3 * time.Second
+		configLoader = xconf.LoaderFunc(func() (map[string]interface{}, error) {
+			if time.Now().Unix()%2 == 0 {
+				readTimeout += time.Second
+			}
+
+			return map[string]interface{}{
+				xcache.RedisCfgKeyAddrs:              redis7ConfigIntegration.Addrs,
+				xcache.RedisCfgKeyFailoverMasterName: redis7ConfigIntegration.MasterName,
+				xcache.RedisCfgKeyReadTimeout:        readTimeout,
+			}, nil
+		})
+		config, _ = xconf.NewDefaultConfig(
+			configLoader,
+			xconf.DefaultConfigWithReloadInterval(time.Second),
+		)
+		subject = xcache.NewRedis7WithConfig(config)
+	)
+	defer config.Close()
+	defer subject.Close()
+
+	testCacheWithXConfConcurrency(subject)(t)
+
+	t.Logf("config changed %d times during test", (readTimeout-3*time.Second)/time.Second)
+}
