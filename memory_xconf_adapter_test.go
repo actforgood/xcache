@@ -178,7 +178,7 @@ func TestMemory_withXConf_concurrency(t *testing.T) {
 		memSize      = freecacheMinMem
 		configLoader = xconf.LoaderFunc(func() (map[string]interface{}, error) {
 			if time.Now().Unix()%2 == 0 {
-				memSize += 1
+				memSize++
 			}
 
 			return map[string]interface{}{
@@ -191,9 +191,10 @@ func TestMemory_withXConf_concurrency(t *testing.T) {
 		)
 		subject = xcache.NewMemoryWithConfig(config)
 	)
-	defer config.Close()
 
 	testCacheWithXConfConcurrency(subject)(t)
+
+	_ = config.Close()
 
 	t.Logf("config changed %d times during test", memSize-freecacheMinMem)
 }

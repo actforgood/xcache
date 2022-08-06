@@ -175,10 +175,12 @@ func TestRedis7_withXConf_concurrency(t *testing.T) {
 		)
 		subject = xcache.NewRedis7WithConfig(config)
 	)
-	defer config.Close()
-	defer subject.Close()
 
 	testCacheWithXConfConcurrency(subject)(t)
+
+	_ = config.Close()
+	err := subject.Close()
+	assertNil(t, err)
 
 	t.Logf("config changed %d times during test", (readTimeout-3*time.Second)/time.Second)
 }
