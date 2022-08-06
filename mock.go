@@ -108,7 +108,7 @@ func (mock *Mock) SetLoadCallback(callback func(context.Context, string) ([]byte
 	mock.loadCallback = callback
 }
 
-// SetTTLCallback sets the given callback to be executed inside Load() method.
+// SetTTLCallback sets the given callback to be executed inside TTL() method.
 // You can inject yourself to make assertions upon passed parameter(s) this way
 // and/or control the returned value.
 //

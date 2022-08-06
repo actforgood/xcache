@@ -31,7 +31,7 @@ type Stats struct {
 	// Notes:
 	// - for Memory Cache it's equal to the memory size used to initialize the cache.
 	// - for Redis Cache it's the max memory Redis was configured with, or system total memory, if max memory is 0.
-	// On a Redis Cluster configuration, it's calculated as the sum of user memory or system total memory of all masters.
+	// On a Redis Cluster configuration, it's calculated as the sum of max memory or system total memory of all masters.
 	MaxMemory int64
 	// Hits represents the number of successful accesses of keys.
 	// Notes:
@@ -39,7 +39,7 @@ type Stats struct {
 	// (if you need this consistency, you can make your own Memory Cache and use Freecache's GetWithExpiration api
 	// for TTL implementation - not used here as it's more costly than TTL api).
 	Hits int64
-	// Hits represents the number of time keys were not found.
+	// Misses represents the number of times keys were not found.
 	// Notes:
 	// - for Redis Cache, also TTL calls to a not found key are reported, for Memory Cache this does not happen
 	// (if you need this consistency, you can make your own Memory Cache and use Freecache's GetWithExpiration api

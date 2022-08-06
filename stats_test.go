@@ -99,7 +99,7 @@ func testStatsWatcherCallbackIsExecutedPeriodically(t *testing.T) {
 	// arrange
 	var (
 		cache          = new(xcache.Mock)
-		subject        = xcache.NewStatsWatcher(cache, 200*time.Millisecond)
+		subject        = xcache.NewStatsWatcher(cache, 300*time.Millisecond)
 		ctx            = context.Background()
 		expectedStats1 = xcache.Stats{
 			Memory:    1024,
@@ -156,7 +156,7 @@ func testStatsWatcherCallbackIsExecutedPeriodically(t *testing.T) {
 	subject.Watch(ctx, fn)
 
 	// assert
-	time.Sleep(700 * time.Millisecond)
+	time.Sleep(1100 * time.Millisecond)
 	assertEqual(t, 3, cache.StatsCallsCount())
 	assertEqual(t, uint32(3), atomic.LoadUint32(&callsCnt))
 }
@@ -263,7 +263,7 @@ func ExampleStatsWatcher() {
 	wg.Add(1)
 	go generateRandomStats(ctx, cache, &wg)
 
-	// initialize our stats watcher, which will exceute a logging callback every second.
+	// initialize our stats watcher, which will execute a logging callback every second.
 	subject := xcache.NewStatsWatcher(cache, time.Second)
 	defer subject.Close() // close your watcher! (at your app shutdown eventually)
 
