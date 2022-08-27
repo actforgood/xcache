@@ -147,7 +147,7 @@ func testCacheTTLWithNotYetExpiredKey(subject xcache.Cache) func(t *testing.T) {
 			key   = "test-expire-ttl-key"
 			value = []byte("test value")
 			ctx   = context.Background()
-			exp   = time.Duration(time.Minute)
+			exp   = time.Minute
 		)
 
 		// act & assert save

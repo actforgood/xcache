@@ -326,7 +326,7 @@ func testMultiTTLFoundInFirstCache(t *testing.T) {
 		subject      = xcache.NewMulti(cache1, cache2)
 		key          = "test-this-ttl-is-found-in-first-cache"
 		ctx          = context.Background()
-		expectedTTL  = time.Duration(30 * time.Second)
+		expectedTTL  = 30 * time.Second
 		ttlCallback1 = func(ctxx context.Context, k string) (time.Duration, error) {
 			assertEqual(t, ctx, ctxx)
 			assertEqual(t, key, k)
@@ -356,7 +356,7 @@ func testMultiTTLFoundInSecondCache(t *testing.T) {
 		subject      = xcache.NewMulti(cache1, cache2)
 		key          = "test-this-ttl-is-found-in-second-cache"
 		ctx          = context.Background()
-		expectedTTL  = time.Duration(30 * time.Second)
+		expectedTTL  = 30 * time.Second
 		ttlCallback1 = func(ctxx context.Context, k string) (time.Duration, error) {
 			assertEqual(t, ctx, ctxx)
 			assertEqual(t, key, k)
@@ -393,7 +393,7 @@ func testMultiTTLFoundInSecondCacheEvenIfFirstCacheTTLFailed(t *testing.T) {
 		subject      = xcache.NewMulti(cache1, cache2)
 		key          = "test-this-ttl-is-found-in-second-cache"
 		ctx          = context.Background()
-		expectedTTL  = time.Duration(30 * time.Second)
+		expectedTTL  = 30 * time.Second
 		ttlCallback1 = func(ctxx context.Context, k string) (time.Duration, error) {
 			assertEqual(t, ctx, ctxx)
 			assertEqual(t, key, k)

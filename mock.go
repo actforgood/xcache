@@ -119,7 +119,7 @@ func (mock *Mock) SetLoadCallback(callback func(context.Context, string) ([]byte
 //			t.Error("expected ...")
 //		}
 //
-//		return time.Duration(123 * time.Second), nil
+//		return 123 * time.Second, nil
 //	})
 func (mock *Mock) SetTTLCallback(callback func(context.Context, string) (time.Duration, error)) {
 	mock.ttlCallback = callback
