@@ -86,7 +86,7 @@ pullImage() {
     docker pull -q "$1"
 }
 
-# removeContainersByRegex stopps and deletes container(s) that match(es) given regular expression.
+# removeContainersByRegex stops and deletes container(s) that match(es) given regular expression.
 # Example: removeContainersByRegex "redis"
 removeContainersByRegex() {
     existing=$(docker container ls -a | awk '{print $NF}' | grep -E "$1")
