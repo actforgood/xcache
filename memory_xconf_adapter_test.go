@@ -76,9 +76,9 @@ func testMemoryWithXConfConfigIsChanged(t *testing.T) {
 
 	// act
 	stats1, _ := subject.Stats(ctx)
-	time.Sleep(1200 * time.Millisecond) // let the keys with 1s expiration to expire
+	time.Sleep(1300 * time.Millisecond) // let the keys with 1s expiration to expire
 	atomic.AddUint32(&reloadConfig, 1)
-	time.Sleep(time.Second) // let xconf reload the configuration
+	time.Sleep(1300 * time.Millisecond) // let xconf reload the configuration
 	stats2, _ := subject.Stats(ctx)
 
 	// assert
@@ -149,9 +149,9 @@ func testMemoryWithXConfConfigIsNotChanged(t *testing.T) {
 
 	// act
 	stats1, _ := subject.Stats(ctx)
-	time.Sleep(1200 * time.Millisecond) // let the keys with 1s expiration to expire
+	time.Sleep(1300 * time.Millisecond) // let the keys with 1s expiration to expire
 	atomic.AddUint32(&reloadConfig, 1)
-	time.Sleep(time.Second) // let xconf reload the configuration
+	time.Sleep(1300 * time.Millisecond) // let xconf reload the configuration
 	stats2, _ := subject.Stats(ctx)
 
 	// assert

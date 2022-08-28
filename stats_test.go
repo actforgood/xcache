@@ -99,7 +99,7 @@ func testStatsWatcherCallbackIsExecutedPeriodically(t *testing.T) {
 	// arrange
 	var (
 		cache          = new(xcache.Mock)
-		subject        = xcache.NewStatsWatcher(cache, 300*time.Millisecond)
+		subject        = xcache.NewStatsWatcher(cache, 400*time.Millisecond)
 		ctx            = context.Background()
 		expectedStats1 = xcache.Stats{
 			Memory:    1024,
@@ -156,7 +156,7 @@ func testStatsWatcherCallbackIsExecutedPeriodically(t *testing.T) {
 	subject.Watch(ctx, fn)
 
 	// assert
-	time.Sleep(1100 * time.Millisecond)
+	time.Sleep(1500 * time.Millisecond)
 	assertEqual(t, 3, cache.StatsCallsCount())
 	assertEqual(t, uint32(3), atomic.LoadUint32(&callsCnt))
 }
