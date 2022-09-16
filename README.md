@@ -10,6 +10,12 @@
 Package `xcache` offers caching alternatives for an application like a local in memory cache,
 or distributed Redis cache, or combination of those two in a multi layered cache.
 
+### Installation
+
+```shell
+$ go get -u github.com/actforgood/xcache
+```
+
 
 ### Cache adapters
 - `Memory` - a local in memory cache, relies upon Freecache package.  

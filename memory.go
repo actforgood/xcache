@@ -1,7 +1,7 @@
-// Copyright 2022 Bogdan Constantinescu.
+// Copyright The ActForGood Authors.
 // Use of this source code is governed by an MIT-style
 // license that can be found in the LICENSE file or at
-// https://github.com/actforgood/xcache/LICENSE.
+// https://github.com/actforgood/xcache/blob/main/LICENSE.
 
 package xcache
 
@@ -31,7 +31,7 @@ type Memory struct {
 // Relaying package additional notes:
 // The cache size will be set to 512KB at minimum.
 // If the size is set relatively large, you should call
-// `debug.SetGCPercent()`, set it to a much smaller value
+// [runtime/debug.SetGCPercent], set it to a much smaller value
 // to limit the memory consumption and GC pause time.
 func NewMemory(memSize int) *Memory {
 	mem := getRealMemorySize(memSize)
