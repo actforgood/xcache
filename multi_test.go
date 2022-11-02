@@ -28,7 +28,10 @@ func TestMulti_Save_Load(t *testing.T) {
 
 	t.Run("success - load 1", testMultiLoadReturnsValueFoundInFirstCache)
 	t.Run("success - load 2", testMultiLoadReturnsValueFoundInSecondCache)
-	t.Run("success - load 2, err is ignored for cache 1", testMultiLoadReturnsValueFoundInSecondCacheEvenIfFirstCacheLoadFailed)
+	t.Run(
+		"success - load 2, err is ignored for cache 1",
+		testMultiLoadReturnsValueFoundInSecondCacheEvenIfFirstCacheLoadFailed,
+	)
 	t.Run("error all - load", testMultiLoadAllCachesReturnErr)
 	t.Run("error not found - load", testMultiLoadReturnsNotFoundErr)
 }

@@ -20,6 +20,7 @@ import (
 	"github.com/actforgood/xcache"
 )
 
+//nolint:lll
 func TestStats_String(t *testing.T) {
 	t.Parallel()
 

@@ -73,7 +73,8 @@ func ExampleRedisXLogger() {
 	logger := xlog.NewSyncLogger(os.Stdout, xlog.SyncLoggerWithOptions(loggerOpts))
 	// set the xlog.Logger Redis adapter
 	redisLogger := xcache.NewRedisXLogger(logger)
-	xcache.SetRedis6Logger(redisLogger) // or xcache.SetRedis7Logger(redisLogger), depending which ver. of Redis you're using.
+	xcache.SetRedis6Logger(redisLogger) // or xcache.SetRedis7Logger(redisLogger),
+	// depending which ver. of Redis you're using.
 
 	// somewhere in your shutdown process ...
 	_ = logger.Close()

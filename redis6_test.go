@@ -92,6 +92,7 @@ func ExampleRedis6_withXConf() {
 	// From this point forward you can do whatever you want with the cache.
 	// Any config that gets changed, cache will reconfigure itself in a time up to reload interval (5 mins here)
 	// without the need of restarting/redeploying our application.
-	// For example, let's assume we notice a lot of timeout errors, until we figure it out what's happening with our Redis server,
+	// For example, let's assume we notice a lot of timeout errors,
+	// until we figure it out what's happening with our Redis server,
 	// we can increase read/write timeouts.
 }

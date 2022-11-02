@@ -11,7 +11,8 @@ import (
 	"time"
 )
 
-// Note: the difference between Redis6 and Redis7, in implementation, consists of using a different version of go-redis client.
+// Note: the difference between Redis6 and Redis7, in implementation,
+// consists of using a different version of go-redis client.
 
 // redisTTLNoExpire is Redis TTL command reply value for a key with no expiration.
 const redisTTLNoExpire = -1

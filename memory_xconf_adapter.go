@@ -28,7 +28,8 @@ const (
 // An observer is registered to xconf.DefaultConfig (which knows to reload configuration).
 // In case "xcache.memory.memsizebytes" config is changed, the Memory is reinitialized with the new memory size,
 // and all items from old freecache instance are copied to the new one. Note: host machine/container needs to have
-// additional to current occupied memory, the new memory size available (until old memory is garbage collected, old memory size is still occupied).
+// additional to current occupied memory, the new memory size available (until old memory is garbage collected,
+// old memory size is still occupied).
 func NewMemoryWithConfig(config xconf.Config) *Memory {
 	mem := config.Get(MemoryCfgKeyMemorySize, memoryCfgDefValueMemorySize).(int)
 
@@ -63,7 +64,8 @@ func (cache *Memory) onConfigChange(config xconf.Config, changedKeys ...string) 
 	cache.mu.Lock()
 	if memSize != int(cache.memSize) {
 		// note 1: stats will be reset on the new client.
-		// note 2: during this code execution memory occupied will be oldMemorySize + newMemorySize so machine needs to have to this memory available.
+		// note 2: during this code execution memory occupied will be oldMemorySize + newMemorySize,
+		// so machine needs to have to this memory available.
 		// note 3: not tested performance if a large number of keys needs to be copied.
 
 		newClient := freecache.NewCache(memSize)
