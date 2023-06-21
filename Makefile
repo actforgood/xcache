@@ -1,4 +1,4 @@
-LINTER_VERSION=v1.50.1
+LINTER_VERSION=v1.53.3
 LINTER=./bin/golangci-lint
 ifeq ($(OS),Windows_NT)
 	LINTER=./bin/golangci-lint.exe
@@ -33,11 +33,11 @@ test-integration: ## Run integration tests (with race condition detection).
 
 .PHONY: bench
 bench: ## Run benchmarks.
-	go test -race -run=^# -benchmem -benchtime=5s -bench=.
+	go test -race -benchmem -benchtime=5s -bench=.
 
 .PHONY: bench-integration
 bench-integration: ## Run integration benchmarks.
-	go test -race -tags=integration -run=^# -benchmem -benchtime=5s -bench=.
+	go test -race -tags=integration -benchmem -benchtime=5s -bench=.
 
 .PHONY: cover
 cover: ## Run tests with coverage. Generates "cover.out" profile and its html representation.

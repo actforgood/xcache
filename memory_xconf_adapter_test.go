@@ -33,14 +33,14 @@ func testMemoryWithXConfConfigIsChanged(t *testing.T) {
 	var (
 		reloadConfig  uint32
 		memSize1      int64 = freecacheMinMem // 512 Kb
-		initialConfig       = map[string]interface{}{
+		initialConfig       = map[string]any{
 			xcache.MemoryCfgKeyMemorySize: memSize1,
 		}
 		memSize2       int64 = 1024 * 1024 // 1 Mb
-		configReloaded       = map[string]interface{}{
+		configReloaded       = map[string]any{
 			xcache.MemoryCfgKeyMemorySize: memSize2,
 		}
-		configLoader = xconf.LoaderFunc(func() (map[string]interface{}, error) {
+		configLoader = xconf.LoaderFunc(func() (map[string]any, error) {
 			if atomic.LoadUint32(&reloadConfig) == 1 {
 				return configReloaded, nil
 			}
@@ -105,15 +105,15 @@ func testMemoryWithXConfConfigIsNotChanged(t *testing.T) {
 	var (
 		reloadConfig  uint32
 		memSize       int64 = freecacheMinMem // 512 Kb
-		initialConfig       = map[string]interface{}{
+		initialConfig       = map[string]any{
 			xcache.MemoryCfgKeyMemorySize: memSize,
 			"some_other_config":           "some value",
 		}
-		configReloaded = map[string]interface{}{
+		configReloaded = map[string]any{
 			xcache.MemoryCfgKeyMemorySize: memSize,
 			"some_other_config":           "some other value",
 		}
-		configLoader = xconf.LoaderFunc(func() (map[string]interface{}, error) {
+		configLoader = xconf.LoaderFunc(func() (map[string]any, error) {
 			if atomic.LoadUint32(&reloadConfig) == 1 {
 				return configReloaded, nil
 			}
@@ -176,12 +176,12 @@ func TestMemory_withXConf_concurrency(t *testing.T) {
 
 	var (
 		memSize      = freecacheMinMem
-		configLoader = xconf.LoaderFunc(func() (map[string]interface{}, error) {
+		configLoader = xconf.LoaderFunc(func() (map[string]any, error) {
 			if time.Now().Unix()%2 == 0 {
 				memSize++
 			}
 
-			return map[string]interface{}{
+			return map[string]any{
 				xcache.MemoryCfgKeyMemorySize: memSize,
 			}, nil
 		})

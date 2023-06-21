@@ -17,19 +17,19 @@ if [ "$1" != "" ]; then
         REDIS_SETUP=$1
     fi
 fi
-RUN=test
+RUN="test"
 if [ "$2" != "" ]; then
-    RUN=benchmark
+    RUN="benchmark"
 fi
-SCRIPT_PATH=$(dirname $(readlink -f $0))
+SCRIPT_PATH=$(dirname "$(readlink -f "$0")")
 CHECK_SIGN="[\033[0;32m\xE2\x9C\x94\033[0;34m]"
 CROSS_SIGN="[\xE2\x9D\x8C]"
 REDIS_VERSIONS=( 6 7 )
 
-DOCKER_REDIS6_IMAGE_VER=redis:6.2.7-alpine3.16
-DOCKER_REDIS7_IMAGE_VER=redis:7.0.5-alpine3.16
-DOCKER_TEST_RUNNER_IMAGE_NAME=xcache-${RUN}-runner
-DOCKER_NETWORK=xcache-network
+DOCKER_REDIS6_IMAGE_VER=redis:6.2.12-alpine3.18
+DOCKER_REDIS7_IMAGE_VER=redis:7.0.11-alpine3.18
+DOCKER_TEST_RUNNER_IMAGE_NAME="xcache-${RUN}-runner"
+DOCKER_NETWORK="xcache-network"
 if [ "$REDIS_SETUP" == "cluster" ]; then
     DOCKER_NETWORK=host
 fi
@@ -52,7 +52,7 @@ fatal() {
 # Example: checkCommands "docker" "git"
 checkCommands() {
     for cmd in "$@"; do
-        if ! [ -x "$(command -v ${cmd})" ]; then
+        if ! [ -x "$(command -v "${cmd}")" ]; then
             fatal "'${cmd}' is not available."
         fi
     done
@@ -140,11 +140,12 @@ createImage() {
 setUpRedisSingleInstance() {
     for redisVer in "${REDIS_VERSIONS[@]}"; do
         redisImg="DOCKER_REDIS${redisVer}_IMAGE_VER"
+        redisContainer="xcache-redis${redisVer}-single"
         docker run -d \
-            --name "xcache-redis${redisVer}-single" \
+            --name "$redisContainer" \
             --network "$DOCKER_NETWORK" \
-            ${!redisImg}
-        checkRedisInstance "xcache-redis${redisVer}-single" 6379
+            "${!redisImg}"
+        checkRedisInstance "$redisContainer" 6379
     done
 }
 
@@ -153,30 +154,33 @@ setUpRedisFailover() {
     for redisVer in "${REDIS_VERSIONS[@]}"; do
         redisImg="DOCKER_REDIS${redisVer}_IMAGE_VER"
 
+        redisContainerMaster="xcache-redis${redisVer}-master"
         docker run -d \
-            --name "xcache-redis${redisVer}-master" \
+            --name "$redisContainerMaster" \
             --network "$DOCKER_NETWORK" \
-            ${!redisImg}
-        checkRedisInstance "xcache-redis${redisVer}-master" 6379
+            "${!redisImg}"
+        checkRedisInstance "$redisContainerMaster" 6379
         
         for replicaNo in 1 2; do
+            redisContainerSlave="xcache-redis${redisVer}-replica-${replicaNo}"
             docker run -d \
-                --name "xcache-redis${redisVer}-replica-${replicaNo}" \
+                --name "$redisContainerSlave" \
                 --network "$DOCKER_NETWORK" \
-                ${!redisImg} \
-                redis-server --replicaof xcache-redis${redisVer}-master 6379
-            checkRedisInstance "xcache-redis${redisVer}-replica-${replicaNo}" 6379
+                "${!redisImg}" \
+                redis-server --replicaof "$redisContainerMaster" 6379
+            checkRedisInstance "$redisContainerSlave" 6379
         done
 
         for sentinelNo in 1 2 3; do
             cp "${SCRIPT_PATH}/../build/sentinel${redisVer}.conf.dist" "${SCRIPT_PATH}/../build/sentinel${redisVer}-${sentinelNo}.conf"
+            redisContainerSentinel="xcache-redis${redisVer}-sentinel-${sentinelNo}"
             docker run -d \
-                --name "xcache-redis${redisVer}-sentinel-${sentinelNo}" \
+                --name "$redisContainerSentinel" \
                 --network "$DOCKER_NETWORK" \
-                -v ${SCRIPT_PATH}/../build:/redis-conf/ \
-                ${!redisImg} \
-                redis-server /redis-conf/sentinel${redisVer}-${sentinelNo}.conf --sentinel
-            checkRedisInstance "xcache-redis${redisVer}-sentinel-${sentinelNo}" 26379
+                -v "${SCRIPT_PATH}/../build":/redis-conf/ \
+                "${!redisImg}" \
+                redis-server "/redis-conf/sentinel${redisVer}-${sentinelNo}.conf" --sentinel
+            checkRedisInstance "$redisContainerSentinel" 26379
         done
         checkFailoverConfiguration "xcache-redis${redisVer}-sentinel-1" 26379
     done
@@ -189,22 +193,27 @@ setUpRedisCluster() {
         hosts=""
         basePort="${redisVer}000"
         for nodeNo in 1 2 3 4 5 6; do
-            port=$(( $basePort + $nodeNo ))
+            port=$(( basePort + nodeNo ))
+            redisContainerClusterNode="xcache-redis${redisVer}-cluster-node-${nodeNo}"
             docker run -d \
-                --name "xcache-redis${redisVer}-cluster-node-${nodeNo}" \
+                --name "$redisContainerClusterNode" \
                 --network "$DOCKER_NETWORK" \
-                ${!redisImg} \
+                "${!redisImg}" \
                 redis-server --cluster-enabled yes --port $port
-            checkRedisInstance "xcache-redis${redisVer}-cluster-node-${nodeNo}" $port
-            hosts="$hosts 127.0.0.1:$port"
+            checkRedisInstance "$redisContainerClusterNode" $port
+            hosts="${hosts} 127.0.0.1:${port}"
         done
-        port=$(( $basePort + 1 ))
-        reply="$(docker exec xcache-redis${redisVer}-cluster-node-1 \
+        port=$(( basePort + 1 ))
+        reply="$(docker exec "xcache-redis${redisVer}-cluster-node-1" \
             redis-cli -p $port \
             --cluster create$hosts \
             --cluster-replicas 1 \
             --cluster-yes | tail -1)"
-        [[ $reply =~ "OK" ]] && debug "Configuring cluster ${CHECK_SIGN}" || fatal "Configuring cluster ${CROSS_SIGN} ($reply)"
+        if [[ "$reply" =~ "OK" ]]; then
+            debug "Configuring cluster ${CHECK_SIGN}"
+        else 
+            fatal "Configuring cluster ${CROSS_SIGN} ($reply)"
+        fi
     done
 }
 
@@ -215,15 +224,19 @@ setUpRedisCluster() {
 # 4th argument is a string representing the master name in case of 'sentinel' configuration for Redis7.
 runTests() {
     out="$(docker run \
-        --name $DOCKER_TEST_RUNNER_IMAGE_NAME \
-        --network $DOCKER_NETWORK \
-        -e XCACHE_REDIS6_ADDRS=$1 \
-        -e XCACHE_REDIS6_MASTER_NAME=$2 \
-        -e XCACHE_REDIS7_ADDRS=$3 \
-        -e XCACHE_REDIS7_MASTER_NAME=$4 \
-        $DOCKER_TEST_RUNNER_IMAGE_NAME)"
+        --name "$DOCKER_TEST_RUNNER_IMAGE_NAME" \
+        --network "$DOCKER_NETWORK" \
+        -e XCACHE_REDIS6_ADDRS="$1" \
+        -e XCACHE_REDIS6_MASTER_NAME="$2" \
+        -e XCACHE_REDIS7_ADDRS="$3" \
+        -e XCACHE_REDIS7_MASTER_NAME="$4" \
+        "$DOCKER_TEST_RUNNER_IMAGE_NAME")"
     printf "%s\n" "$out"
-    [[ $out =~ ok.+github ]] && debug "Run ${RUN}s ${CHECK_SIGN}" || debug "Run ${RUN}s ${CROSS_SIGN}"
+    if [[ "$out" =~ ok.+github ]]; then
+        debug "Run ${RUN}s ${CHECK_SIGN}"
+    else 
+        debug "Run ${RUN}s ${CROSS_SIGN}"
+    fi
 }
 
 # checkFailoverConfiguration verifies that 1 master with 2 slaves watched by 3 sentinels is properly configured.
@@ -238,7 +251,7 @@ checkFailoverConfiguration() {
     debug "Checking sentinel configuration ..."
     while true ; do
         conditionsMet=0
-        reply=$(docker exec $sentinelInstance redis-cli -p $sentinelPort sentinel master xcacheMaster 2> /dev/null)
+        reply=$(docker exec "$sentinelInstance" redis-cli -p "$sentinelPort" sentinel master xcacheMaster 2> /dev/null)
         [[ $reply =~ ip[[:space:]](xcache-redis.-master)[[:space:]] ]] && masterIP=${BASH_REMATCH[1]}
         [[ $reply =~ port[[:space:]](6379)[[:space:]] ]] && masterPort=${BASH_REMATCH[1]}
         [[ $reply =~ num-slaves[[:space:]]([[:digit:]]{1})[[:space:]] ]] && numSlaves=${BASH_REMATCH[1]}
@@ -281,7 +294,7 @@ checkRedisInstance() {
     retryNo=0
     maxRetries=5
     while true ; do
-        reply=$(docker exec $redisInstance redis-cli -p $redisPort ping 2> /dev/null)
+        reply=$(docker exec "$redisInstance" redis-cli -p "$redisPort" ping 2> /dev/null)
         if [ "$reply" == "PONG" ]; then
             debug "PING ${redisInstance}:${redisPort} ${CHECK_SIGN}"
             break

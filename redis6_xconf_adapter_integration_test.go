@@ -36,7 +36,7 @@ func testRedis6WithXConfConfigIsChanged(t *testing.T) {
 	// arrange
 	var (
 		reloadConfig  uint32
-		initialConfig = map[string]interface{}{
+		initialConfig = map[string]any{
 			xcache.RedisCfgKeyAddrs:              redis6ConfigIntegration.Addrs,
 			xcache.RedisCfgKeyFailoverMasterName: redis6ConfigIntegration.MasterName,
 			xcache.RedisCfgKeyDB:                 0,
@@ -44,7 +44,7 @@ func testRedis6WithXConfConfigIsChanged(t *testing.T) {
 			xcache.RedisCfgKeyReadTimeout:        10 * time.Second,
 			xcache.RedisCfgKeyWriteTimeout:       15 * time.Second,
 		}
-		configReloaded = map[string]interface{}{
+		configReloaded = map[string]any{
 			xcache.RedisCfgKeyAddrs:              redis6ConfigIntegration.Addrs,
 			xcache.RedisCfgKeyFailoverMasterName: redis6ConfigIntegration.MasterName,
 			xcache.RedisCfgKeyDB:                 1,
@@ -52,7 +52,7 @@ func testRedis6WithXConfConfigIsChanged(t *testing.T) {
 			xcache.RedisCfgKeyReadTimeout:        9 * time.Second,
 			xcache.RedisCfgKeyWriteTimeout:       14 * time.Second,
 		}
-		configLoader = xconf.LoaderFunc(func() (map[string]interface{}, error) {
+		configLoader = xconf.LoaderFunc(func() (map[string]any, error) {
 			if atomic.LoadUint32(&reloadConfig) == 1 {
 				return configReloaded, nil
 			}
@@ -96,7 +96,7 @@ func testRedis6WithXConfConfigIsNotChanged(t *testing.T) {
 	// arrange
 	var (
 		reloadConfig  uint32
-		initialConfig = map[string]interface{}{
+		initialConfig = map[string]any{
 			xcache.RedisCfgKeyAddrs:              redis6ConfigIntegration.Addrs,
 			xcache.RedisCfgKeyFailoverMasterName: redis6ConfigIntegration.MasterName,
 			xcache.RedisCfgKeyDB:                 0,
@@ -105,7 +105,7 @@ func testRedis6WithXConfConfigIsNotChanged(t *testing.T) {
 			xcache.RedisCfgKeyWriteTimeout:       15 * time.Second,
 			"some_other_config":                  "some value",
 		}
-		configReloaded = map[string]interface{}{
+		configReloaded = map[string]any{
 			xcache.RedisCfgKeyAddrs:              redis6ConfigIntegration.Addrs,
 			xcache.RedisCfgKeyFailoverMasterName: redis6ConfigIntegration.MasterName,
 			xcache.RedisCfgKeyDB:                 0,
@@ -114,7 +114,7 @@ func testRedis6WithXConfConfigIsNotChanged(t *testing.T) {
 			xcache.RedisCfgKeyWriteTimeout:       15 * time.Second,
 			"some_other_config":                  "some other value",
 		}
-		configLoader = xconf.LoaderFunc(func() (map[string]interface{}, error) {
+		configLoader = xconf.LoaderFunc(func() (map[string]any, error) {
 			if atomic.LoadUint32(&reloadConfig) == 1 {
 				return configReloaded, nil
 			}
@@ -157,12 +157,12 @@ func TestRedis6_withXConf_concurrency(t *testing.T) {
 
 	var (
 		readTimeout  = 3 * time.Second
-		configLoader = xconf.LoaderFunc(func() (map[string]interface{}, error) {
+		configLoader = xconf.LoaderFunc(func() (map[string]any, error) {
 			if time.Now().Unix()%2 == 0 {
 				readTimeout += time.Second
 			}
 
-			return map[string]interface{}{
+			return map[string]any{
 				xcache.RedisCfgKeyAddrs:              redis6ConfigIntegration.Addrs,
 				xcache.RedisCfgKeyFailoverMasterName: redis6ConfigIntegration.MasterName,
 				xcache.RedisCfgKeyReadTimeout:        readTimeout,
