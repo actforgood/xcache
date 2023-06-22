@@ -28,7 +28,7 @@ func TestStats_String(t *testing.T) {
 	tests := [...]struct {
 		name           string
 		subject        xcache.Stats
-		expectedResult interface{}
+		expectedResult any
 	}{
 		{
 			name: "mb memory/gb memory",

@@ -44,7 +44,7 @@ func NewRedisXLogger(logger xlog.Logger) RedisXLogger {
 // Method categorizes the message as error/info based on presence of some words
 // like "failed"/"error".
 // nolint:lll
-func (l RedisXLogger) Printf(_ context.Context, format string, v ...interface{}) {
+func (l RedisXLogger) Printf(_ context.Context, format string, v ...any) {
 	msg := fmt.Sprintf(format, v...)
 	if strings.Contains(msg, "failed") || strings.Contains(msg, "error") {
 		l.logger.Error(xlog.MessageKey, msg, "pkg", "redis")

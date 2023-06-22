@@ -37,8 +37,8 @@ func testRedisXLoggerByLevel(lvl xlog.Level) func(t *testing.T) {
 				xlog.LevelError: "some redis message about master=%q failed due some err",
 			}
 			masterName  = "testMaster"
-			logCallback = func(expectedMsg string) func(keyValues ...interface{}) {
-				return func(keyValues ...interface{}) {
+			logCallback = func(expectedMsg string) func(keyValues ...any) {
+				return func(keyValues ...any) {
 					for i := 0; i < len(keyValues); i += 2 {
 						if keyValues[i] == xlog.MessageKey {
 							assertEqual(t, expectedMsg, keyValues[i+1])
