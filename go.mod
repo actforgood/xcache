@@ -6,7 +6,7 @@ require (
 	github.com/actforgood/xconf v1.7.0
 	github.com/actforgood/xerr v1.2.0
 	github.com/actforgood/xlog v1.4.0
-	github.com/coocood/freecache v1.2.3
+	github.com/coocood/freecache v1.2.4
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/go-redis/redis/v9 v9.0.0-rc.2
 )
