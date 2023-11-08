@@ -215,8 +215,8 @@ This package is released under a MIT license. See [LICENSE](LICENSE).
 Other 3rd party packages directly used by this package are released under their own licenses.  
 
 * github.com/coocood/freecache - [MIT License](https://github.com/coocood/freecache/blob/master/LICENSE)  
-* github.com/go-redis/redis/v8 - [BSD (2 Clause) License](https://github.com/go-redis/redis/blob/v8.11.5/LICENSE)
-* github.com/go-redis/redis/v9 - [BSD (2 Clause) License](https://github.com/go-redis/redis/blob/v9.0.0-beta.2/LICENSE)    
+* github.com/redis/go-redis/v8 - [BSD (2 Clause) License](https://github.com/redis/go-redis/blob/v8.11.5/LICENSE)
+* github.com/redis/go-redis/v9 - [BSD (2 Clause) License](https://github.com/redis/go-redis/blob/v9.0.0-beta.2/LICENSE)    
 * github.com/actforgood/xerr - [MIT License](https://github.com/actforgood/xerr/blob/main/LICENSE)  
 * github.com/actforgood/xlog - [MIT License](https://github.com/actforgood/xlog/blob/main/LICENSE)  
 * github.com/actforgood/xconf - [MIT License](https://github.com/actforgood/xconf/blob/main/LICENSE)  

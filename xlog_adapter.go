@@ -12,7 +12,7 @@ import (
 
 	"github.com/actforgood/xlog"
 	redis6 "github.com/go-redis/redis/v8"
-	redis7 "github.com/go-redis/redis/v9"
+	redis7 "github.com/redis/go-redis/v9"
 )
 
 // RedisXLogger is a XLog adapter for Redis internal logging contract.
@@ -31,7 +31,7 @@ func NewRedisXLogger(logger xlog.Logger) RedisXLogger {
 }
 
 // Printf implements redis pkg internal.Logging contract,
-// see also https://github.com/go-redis/redis/blob/v8.11.5/internal/log.go .
+// see also https://github.com/redis/go-redis/blob/v8.11.5/internal/log.go .
 //
 // Example of default redis logger output (which goes to StdErr):
 //

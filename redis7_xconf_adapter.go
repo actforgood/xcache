@@ -9,7 +9,7 @@ import (
 	"sync"
 
 	"github.com/actforgood/xconf"
-	redis7 "github.com/go-redis/redis/v9"
+	redis7 "github.com/redis/go-redis/v9"
 )
 
 // NewRedis7WithConfig initializes a Redis7 Cache with configuration taken from a xconf.Config.

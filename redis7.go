@@ -13,7 +13,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	redis7 "github.com/go-redis/redis/v9"
+	redis7 "github.com/redis/go-redis/v9"
 )
 
 // Redis7 is Redis (distributed, ver.7) based implementation for Cache.
