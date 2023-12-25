@@ -8,7 +8,7 @@ require (
 	github.com/actforgood/xlog v1.5.0
 	github.com/coocood/freecache v1.2.4
 	github.com/go-redis/redis/v8 v8.11.5
-	github.com/redis/go-redis/v9 v9.3.0
+	github.com/redis/go-redis/v9 v9.3.1
 )
 
 require (
