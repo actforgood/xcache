@@ -14,7 +14,7 @@ or distributed Redis cache, or combination of those two in a multi layered cache
 ### Installation
 
 ```shell
-$ go get -u github.com/actforgood/xcache
+$ go get github.com/actforgood/xcache
 ```
 
 
