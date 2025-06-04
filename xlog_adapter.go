@@ -47,9 +47,9 @@ func NewRedisXLogger(logger xlog.Logger) RedisXLogger {
 func (l RedisXLogger) Printf(_ context.Context, format string, v ...any) {
 	msg := fmt.Sprintf(format, v...)
 	if strings.Contains(msg, "failed") || strings.Contains(msg, "error") {
-		l.logger.Error(xlog.MessageKey, msg, "pkg", "redis")
+		l.logger.Error(xlog.MsgKey, msg, "pkg", "redis")
 	} else {
-		l.logger.Info(xlog.MessageKey, msg, "pkg", "redis")
+		l.logger.Info(xlog.MsgKey, msg, "pkg", "redis")
 	}
 }
 

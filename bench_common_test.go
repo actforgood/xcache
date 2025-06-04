@@ -26,7 +26,7 @@ func benchLoadSequential(cache xcache.Cache) func(b *testing.B) {
 		b.ReportAllocs()
 		b.ResetTimer()
 
-		for n := 0; n < b.N; n++ {
+		for range b.N {
 			if _, err := cache.Load(ctx, key); err != nil {
 				b.Error(err)
 			}
@@ -63,14 +63,14 @@ func benchSaveSequential(cache xcache.Cache) func(b *testing.B) {
 		// reporting 2 extra allocations which have nothing to do with the tested cache.
 		keyPrefixLen := len(keyPrefix)
 		keyBytes := make([]byte, len(keyPrefix)+8)
-		for i := 0; i < keyPrefixLen; i++ {
+		for i := range keyPrefixLen {
 			keyBytes[i] = keyPrefix[i]
 		}
 
 		b.ReportAllocs()
 		b.ResetTimer()
 
-		for n := 0; n < b.N; n++ {
+		for n := range b.N {
 			binary.LittleEndian.PutUint64(keyBytes[keyPrefixLen:], uint64(n))
 			key := *(*string)(unsafe.Pointer(&keyBytes))
 			if err := cache.Save(ctx, key, value, expire); err != nil {
@@ -94,7 +94,7 @@ func benchSaveParallel(cache xcache.Cache) func(b *testing.B) {
 				// so in _Save_parallel benchmarks real value should be considered the reported one - 1.
 				keyPrefixLen := len(keyPrefix)
 				keyBytes := make([]byte, len(keyPrefix)+8)
-				for i := 0; i < keyPrefixLen; i++ {
+				for i := range keyPrefixLen {
 					keyBytes[i] = keyPrefix[i]
 				}
 				binary.LittleEndian.PutUint64(keyBytes[keyPrefixLen:], atomic.LoadUint64(&counter))
@@ -118,7 +118,7 @@ func benchTTLSequential(cache xcache.Cache) func(b *testing.B) {
 		b.ReportAllocs()
 		b.ResetTimer()
 
-		for n := 0; n < b.N; n++ {
+		for range b.N {
 			if _, err := cache.TTL(ctx, key); err != nil {
 				b.Error(err)
 			}
@@ -153,7 +153,7 @@ func benchStatsSequential(cache xcache.Cache) func(b *testing.B) {
 		b.ReportAllocs()
 		b.ResetTimer()
 
-		for n := 0; n < b.N; n++ {
+		for range b.N {
 			if _, err := cache.Stats(ctx); err != nil {
 				b.Error(err)
 			}

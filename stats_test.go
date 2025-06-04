@@ -9,7 +9,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"math/rand"
+	rand "math/rand/v2"
 	"runtime"
 	"strconv"
 	"sync"
@@ -71,8 +71,7 @@ func TestStats_String(t *testing.T) {
 		},
 	}
 
-	for _, testData := range tests {
-		test := testData // capture range variable
+	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			// act
 			result1 := test.subject.String()
@@ -249,7 +248,7 @@ func BenchmarkStats_String(b *testing.B) {
 	b.ReportAllocs()
 	b.ResetTimer()
 
-	for n := 0; n < b.N; n++ {
+	for range b.N {
 		_ = stats.String()
 	}
 }
@@ -300,7 +299,7 @@ func generateRandomStats(ctx context.Context, cache xcache.Cache, wg *sync.WaitG
 		case <-ctx.Done():
 			return
 		default:
-			randLoop := rand.Intn(10)
+			randLoop := rand.IntN(10)
 			for i := 0; i <= randLoop; i++ {
 				key := keyPrefix + strconv.FormatInt(time.Now().UnixNano(), 10)
 				_ = cache.Save(ctx, key, value, ttl)

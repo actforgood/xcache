@@ -31,7 +31,7 @@ func NewRedis6WithConfig(config xconf.Config) *Redis6 {
 	return cache
 }
 
-// onConfigChange is a callback to be registered to xconf.DefaultConfig knows knows to reload configuration.
+// onConfigChange is a callback to be registered to xconf.DefaultConfig knows to reload configuration.
 // In case one of RedisCfgKey* configs is changed, the Redis6 is reinitialized with the new config.
 // This callback is automatically registered on instantiation of a Redis6 object with NewRedis6WithConfig.
 func (cache *Redis6) onConfigChange(config xconf.Config, changedKeys ...string) {

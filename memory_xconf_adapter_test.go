@@ -58,7 +58,7 @@ func testMemoryWithXConfConfigIsChanged(t *testing.T) {
 	)
 	defer config.Close()
 	// save some keys
-	for i := 0; i < 10; i++ {
+	for i := range 10 {
 		key := keyPrefix + strconv.FormatInt(int64(i), 10)
 		err := subject.Save(ctx, key, value, xcache.NoExpire)
 		requireNil(t, err)
@@ -86,7 +86,7 @@ func testMemoryWithXConfConfigIsChanged(t *testing.T) {
 	assertEqual(t, int64(30), stats1.Keys)
 	assertEqual(t, memSize2, stats2.MaxMemory)
 	assertEqual(t, int64(20), stats2.Keys) // 10 expired
-	for i := 0; i < 20; i++ {
+	for i := range 20 {
 		key := keyPrefix + strconv.FormatInt(int64(i), 10)
 		_, err := subject.Load(ctx, key)
 		assertNil(t, err)
@@ -131,7 +131,7 @@ func testMemoryWithXConfConfigIsNotChanged(t *testing.T) {
 	)
 	defer config.Close()
 	// save some keys
-	for i := 0; i < 10; i++ {
+	for i := range 10 {
 		key := keyPrefix + strconv.FormatInt(int64(i), 10)
 		err := subject.Save(ctx, key, value, xcache.NoExpire)
 		requireNil(t, err)
@@ -159,7 +159,7 @@ func testMemoryWithXConfConfigIsNotChanged(t *testing.T) {
 	assertEqual(t, int64(30), stats1.Keys)
 	assertEqual(t, memSize, stats2.MaxMemory)
 	assertEqual(t, int64(30), stats2.Keys) // 10 expired, but freecache does not deletes them until load
-	for i := 0; i < 20; i++ {
+	for i := range 20 {
 		key := keyPrefix + strconv.FormatInt(int64(i), 10)
 		_, err := subject.Load(ctx, key)
 		assertNil(t, err)

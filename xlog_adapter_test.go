@@ -40,10 +40,11 @@ func testRedisXLoggerByLevel(lvl xlog.Level) func(t *testing.T) {
 			logCallback = func(expectedMsg string) func(keyValues ...any) {
 				return func(keyValues ...any) {
 					for i := 0; i < len(keyValues); i += 2 {
-						if keyValues[i] == xlog.MessageKey {
+						switch keyValues[i] {
+						case xlog.MsgKey:
 							assertEqual(t, expectedMsg, keyValues[i+1])
 							foundNeededInfo++
-						} else if keyValues[i] == "pkg" {
+						case "pkg":
 							assertEqual(t, "redis", keyValues[i+1])
 							foundNeededInfo++
 						}
@@ -90,7 +91,7 @@ func BenchmarkRedisXLogger(b *testing.B) {
 	b.ReportAllocs()
 	b.ResetTimer()
 
-	for n := 0; n < b.N; n++ {
+	for range b.N {
 		redisLogger.Printf(ctx, message, masterName)
 	}
 }

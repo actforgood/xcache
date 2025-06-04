@@ -32,7 +32,7 @@ func testCacheWithNoExpireKey(subject xcache.Cache) func(t *testing.T) {
 		resultErr := subject.Save(ctx, key, value, exp)
 		requireNil(t, resultErr)
 
-		for i := 0; i < 50; i++ {
+		for range 50 {
 			// act & assert load
 			resultValue, resultErr := subject.Load(ctx, key)
 			assertNil(t, resultErr)
@@ -179,33 +179,33 @@ func testCacheStats(
 			smallerExp = 2 * time.Second
 			biggerExp  = 10 * time.Minute
 		)
-		for i := 0; i < 20; i++ { // delete keys needed for Keys reporting
+		for i := range 20 { // delete keys needed for Keys reporting
 			key := hitKey + strconv.FormatInt(int64(i), 10)
 			_ = subject.Save(ctx, key, nil, -1)
 		}
 		prevStats, resultErr := subject.Stats(ctx)
 		requireNil(t, resultErr)
 
-		for i := 0; i < 20; i++ { // 20 x hit
+		for i := range 20 { // 20 x hit
 			key := hitKey + strconv.FormatInt(int64(i), 10)
 			resultErr = subject.Save(ctx, key, value, biggerExp)
 			requireNil(t, resultErr)
 			_, resultErr = subject.Load(ctx, key)
 			requireNil(t, resultErr)
 		}
-		for i := 0; i < 10; i++ { // 10 x hit, 10 x expired
+		for i := range 10 { // 10 x hit, 10 x expired
 			key := expKey + strconv.FormatInt(int64(i), 10)
 			resultErr = subject.Save(ctx, key, value, smallerExp)
 			requireNil(t, resultErr)
 			_, resultErr = subject.Load(ctx, key)
 			requireNil(t, resultErr)
 		}
-		for i := 0; i < 25; i++ { // 25 x miss
+		for range 25 { // 25 x miss
 			_, resultErr = subject.Load(ctx, missKey)
 			assertTrue(t, errors.Is(resultErr, xcache.ErrNotFound))
 		}
 		time.Sleep(2500 * time.Millisecond) // let keys with smallerExp expire
-		for i := 0; i < 10; i++ {           // 10 x miss
+		for i := range 10 {                 // 10 x miss
 			key := expKey + strconv.FormatInt(int64(i), 10) // load expired keys to let Freecache count the expiration
 			_, resultErr = subject.Load(ctx, key)
 			assertTrue(t, errors.Is(resultErr, xcache.ErrNotFound))
@@ -250,7 +250,7 @@ func testCacheWithXConfConcurrency(subject xcache.Cache) func(t *testing.T) {
 		requireNil(t, err)
 
 		wg.Add(goroutinesNo)
-		for threadNo := 0; threadNo < goroutinesNo; threadNo++ {
+		for threadNo := range goroutinesNo {
 			go func(ctx context.Context, cache xcache.Cache, waitGr *sync.WaitGroup, thread int) {
 				defer waitGr.Done()
 				for {
@@ -259,7 +259,7 @@ func testCacheWithXConfConcurrency(subject xcache.Cache) func(t *testing.T) {
 						return
 					default:
 						// cover all APIs of Cache: perform save, load, ttl, stats operations.
-						for i := 0; i < 10; i++ {
+						for i := range 10 {
 							key := "test-concurrency-key-" + strconv.FormatInt(int64(thread), 10) + "-" + strconv.FormatInt(int64(i), 10)
 							err := cache.Save(context.Background(), key, []byte("test value"), time.Minute)
 							assertNil(t, err)

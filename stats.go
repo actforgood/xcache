@@ -99,7 +99,10 @@ func (s Stats) String() string {
 }
 
 // bytesHumanFriendly returns bytes converted to easier to read value.
-// Example: bytesHumanFriendly(2 * 1024 * 1024) => "2M" .
+//
+// Example:
+//
+//	bytesHumanFriendly(2 * 1024 * 1024) => "2M" .
 func bytesHumanFriendly(bytes int64) string {
 	const (
 		unit    = 1024
@@ -132,7 +135,7 @@ func bytesHumanFriendly(bytes int64) string {
 
 // StatsWatcher can be used to execute a given callback
 // upon stats, interval based.
-// It implements io.Closer and should be closed at your application shutdown.
+// It implements [io.Closer] and should be closed at your application shutdown.
 type StatsWatcher struct {
 	*watcher  // so we can use finalizer
 	watchOnce sync.Once
@@ -161,7 +164,7 @@ func NewStatsWatcher(cache Cache, interval time.Duration) *StatsWatcher {
 // Calling Watch multiple times has no effect.
 func (sw *StatsWatcher) Watch(ctx context.Context, fn func(context.Context, Stats, error)) {
 	sw.watchOnce.Do(func() {
-		sw.watcher.watch(ctx, fn)
+		sw.watch(ctx, fn)
 		// register also a finalizer, just in case, user forgets to call Close().
 		// Note: user should do not rely on this, it's recommended to explicitly call Close().
 		runtime.SetFinalizer(sw, (*StatsWatcher).Close)
@@ -170,11 +173,11 @@ func (sw *StatsWatcher) Watch(ctx context.Context, fn func(context.Context, Stat
 
 // Close stops the underlying ticker used to execute the callback, interval based, avoiding memory leaks.
 // It should be called at your application shutdown.
-// It implements io.Closer interface, and the returned error can be disregarded (is nil all the time).
+// It implements [io.Closer] interface, and the returned error can be disregarded (is nil all the time).
 func (sw *StatsWatcher) Close() error {
 	if sw != nil && sw.ticker != nil {
 		sw.closeOnce.Do(func() {
-			sw.watcher.close()
+			sw.close()
 			runtime.SetFinalizer(sw, nil)
 		})
 	}
