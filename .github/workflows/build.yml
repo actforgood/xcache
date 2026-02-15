@@ -94,7 +94,7 @@ jobs:
     - name: Run integration tests
       run: |
         go mod download
-        make cover-integration
+        make setup cover-integration
       env:
           XCACHE_REDIS6_ADDRS: 127.0.0.1:6379
           XCACHE_REDIS7_ADDRS: 127.0.0.1:6380
@@ -103,6 +103,6 @@ jobs:
       if: matrix.go-version == '1.24.x'
       uses: coverallsapp/github-action@v2
       with:
-        file: cover-integration.out
+        file: bin/cover-integration.out
         flag-name: integration-test
         fail-on-error: false
