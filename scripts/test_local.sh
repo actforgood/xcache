@@ -26,8 +26,9 @@ CHECK_SIGN="[\033[0;32m\xE2\x9C\x94\033[0;34m]"
 CROSS_SIGN="[\xE2\x9D\x8C]"
 REDIS_VERSIONS=( 6 7 )
 
-DOCKER_REDIS6_IMAGE_VER=redis:6.2.18-alpine3.21
-DOCKER_REDIS7_IMAGE_VER=redis:7.4.4-alpine3.21
+DOCKER_REDIS6_IMAGE_VER=redis:6.2.21-alpine3.21
+DOCKER_REDIS7_IMAGE_VER=redis:7.4.7-alpine3.21
+# DOCKER_REDIS7_IMAGE_VER=redis:8.2.4-alpine3.22
 DOCKER_TEST_RUNNER_IMAGE_NAME="xcache-${RUN}-runner"
 DOCKER_NETWORK="xcache-network"
 if [ "$REDIS_SETUP" == "cluster" ]; then

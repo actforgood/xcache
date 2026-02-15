@@ -21,7 +21,9 @@ $ go get github.com/actforgood/xcache
 ### Cache adapters
 - `Memory` - a local in memory cache, relies upon Freecache package.  
 - `Redis6` - Redis version 6 cache (single instance / sentinel failover / cluster).  
-- `Redis7` - Redis version 7 cache (single instance / sentinel failover / cluster).  
+- `Redis7` - Redis version 7 cache (single instance / sentinel failover / cluster). 
+> [!NOTE]
+> Redis7 seems to work also with Redis version 8 from testing briefly.
 - `Multi` - A multi layer cache.  
 - `Nop` - A no-operation cache.  
 - `Mock` - A stub that can be used in Unit Tests.  
@@ -218,5 +220,4 @@ Other 3rd party packages directly used by this package are released under their 
 * github.com/redis/go-redis/v8 - [BSD (2 Clause) License](https://github.com/redis/go-redis/blob/v8.11.5/LICENSE)
 * github.com/redis/go-redis/v9 - [BSD (2 Clause) License](https://github.com/redis/go-redis/blob/v9.0.0-beta.2/LICENSE)    
 * github.com/actforgood/xerr - [MIT License](https://github.com/actforgood/xerr/blob/main/LICENSE)  
-* github.com/actforgood/xlog - [MIT License](https://github.com/actforgood/xlog/blob/main/LICENSE)  
 * github.com/actforgood/xconf - [MIT License](https://github.com/actforgood/xconf/blob/main/LICENSE)  

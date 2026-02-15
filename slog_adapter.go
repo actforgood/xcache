@@ -8,24 +8,24 @@ package xcache
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"strings"
 
-	"github.com/actforgood/xlog"
 	redis6 "github.com/go-redis/redis/v8"
 	redis7 "github.com/redis/go-redis/v9"
 )
 
-// RedisXLogger is a XLog adapter for Redis internal logging contract.
+// RedisSLogger is a log/slog adapter for Redis internal logging contract.
 // Redis default logger has an unstructured format (and relies upon standard Go Logger).
 // Through this adapter, you can achieve a structured output of the log as a whole,
 // but the message inside will still be unstructured. See also Printf method doc.
-type RedisXLogger struct {
-	logger xlog.Logger
+type RedisSLogger struct {
+	logger *slog.Logger
 }
 
-// NewRedisXLogger instantiates a new RedisXLogger object.
-func NewRedisXLogger(logger xlog.Logger) RedisXLogger {
-	return RedisXLogger{
+// NewRedisSLogger instantiates a new RedisSLogger object.
+func NewRedisSLogger(logger *slog.Logger) RedisSLogger {
+	return RedisSLogger{
 		logger: logger,
 	}
 }
@@ -37,28 +37,28 @@ func NewRedisXLogger(logger xlog.Logger) RedisXLogger {
 //
 //	redis: 2022/07/29 07:16:34 sentinel.go:661: sentinel: new master="xcacheMaster" addr="some-redis-master:6380"
 //
-// Example of RedisXLogger output:
+// Example of RedisSLogger output:
 //
-//	{"date":"2022-07-29T09:07:54.915902723Z","lvl":"INFO","msg":"sentinel: new master=\"xcacheMaster\" addr=\"some-redis-master:6380\"","pkg":"redis","src":"/sentinel.go:661"}
+//	{"date":"2022-07-29T09:07:54.915902723Z","level":"INFO","msg":"sentinel: new master=\"xcacheMaster\" addr=\"some-redis-master:6380\"","pkg":"redis","src":"/sentinel.go:661"}
 //
 // Method categorizes the message as error/info based on presence of some words
 // like "failed"/"error".
 // nolint:lll
-func (l RedisXLogger) Printf(_ context.Context, format string, v ...any) {
+func (l RedisSLogger) Printf(_ context.Context, format string, v ...any) {
 	msg := fmt.Sprintf(format, v...)
 	if strings.Contains(msg, "failed") || strings.Contains(msg, "error") {
-		l.logger.Error(xlog.MsgKey, msg, "pkg", "redis")
+		l.logger.Error(msg, "pkg", "redis")
 	} else {
-		l.logger.Info(xlog.MsgKey, msg, "pkg", "redis")
+		l.logger.Info(msg, "pkg", "redis")
 	}
 }
 
-// SetRedis6Logger sets given xlog logger for a Redis6 client.
-func SetRedis6Logger(redisXLogger RedisXLogger) {
-	redis6.SetLogger(redisXLogger)
+// SetRedis6Logger sets given slog logger for a Redis6 client.
+func SetRedis6Logger(redisSLogger RedisSLogger) {
+	redis6.SetLogger(redisSLogger)
 }
 
-// SetRedis7Logger sets given xlog logger for a Redis7 client.
-func SetRedis7Logger(redisXLogger RedisXLogger) {
-	redis7.SetLogger(redisXLogger)
+// SetRedis7Logger sets given slog logger for a Redis7 client.
+func SetRedis7Logger(redisSLogger RedisSLogger) {
+	redis7.SetLogger(redisSLogger)
 }

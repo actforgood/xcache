@@ -98,8 +98,11 @@ func testStatsWatcherCallbackIsExecutedPeriodically(t *testing.T) {
 
 	// arrange
 	var (
-		cache          = new(xcache.Mock)
-		subject        = xcache.NewStatsWatcher(cache, 400*time.Millisecond)
+		expectedCallsCnt = 3
+		interval         = 400 * time.Millisecond
+		cache            = new(xcache.Mock)
+		subject          = xcache.NewStatsWatcher(cache, interval)
+
 		ctx            = context.Background()
 		expectedStats1 = xcache.Stats{
 			Memory:    1024,
@@ -154,11 +157,11 @@ func testStatsWatcherCallbackIsExecutedPeriodically(t *testing.T) {
 
 	// act
 	subject.Watch(ctx, fn)
+	time.Sleep(time.Duration(expectedCallsCnt)*interval + 200*time.Millisecond)
 
 	// assert
-	time.Sleep(1500 * time.Millisecond)
-	assertEqual(t, 3, cache.StatsCallsCount())
-	assertEqual(t, uint32(3), atomic.LoadUint32(&callsCnt))
+	assertEqual(t, expectedCallsCnt, cache.StatsCallsCount())
+	assertEqual(t, uint32(expectedCallsCnt), atomic.LoadUint32(&callsCnt))
 }
 
 func testStatsWatcherCloseStopsWatching(t *testing.T) {
@@ -166,8 +169,9 @@ func testStatsWatcherCloseStopsWatching(t *testing.T) {
 
 	// arrange
 	var (
+		interval = 500 * time.Millisecond
 		cache    = new(xcache.Mock)
-		subject  = xcache.NewStatsWatcher(cache, 500*time.Millisecond)
+		subject  = xcache.NewStatsWatcher(cache, interval)
 		callsCnt uint32
 		fn       = func(context.Context, xcache.Stats, error) {
 			atomic.AddUint32(&callsCnt, 1)
@@ -178,7 +182,7 @@ func testStatsWatcherCloseStopsWatching(t *testing.T) {
 	// act
 	time.Sleep(50 * time.Millisecond)
 	err := subject.Close()
-	time.Sleep(700 * time.Millisecond)
+	time.Sleep(interval + 200*time.Millisecond)
 
 	// assert
 	assertNil(t, err)
@@ -193,7 +197,8 @@ func testStatsWatcherCancelContextStopsWatching(t *testing.T) {
 	var (
 		cache          = new(xcache.Mock)
 		ctx, cancelCtx = context.WithCancel(context.Background())
-		subject        = xcache.NewStatsWatcher(cache, 500*time.Millisecond)
+		interval       = 500 * time.Millisecond
+		subject        = xcache.NewStatsWatcher(cache, interval)
 		callsCnt       uint32
 		fn             = func(context.Context, xcache.Stats, error) {
 			atomic.AddUint32(&callsCnt, 1)
@@ -204,7 +209,7 @@ func testStatsWatcherCancelContextStopsWatching(t *testing.T) {
 	// act
 	time.Sleep(50 * time.Millisecond)
 	cancelCtx()
-	time.Sleep(700 * time.Millisecond)
+	time.Sleep(interval + 200*time.Millisecond)
 
 	// assert
 	assertEqual(t, 0, cache.StatsCallsCount())
@@ -215,8 +220,9 @@ func testStatsWatcherFinalizerIsCalled(t *testing.T) {
 	// test finalizer is called if we "forget" to call Close.
 	// arrange
 	var (
+		interval = 500 * time.Millisecond
 		cache    = new(xcache.Mock)
-		subject  = xcache.NewStatsWatcher(cache, 500*time.Millisecond)
+		subject  = xcache.NewStatsWatcher(cache, interval)
 		callsCnt uint32
 		fn       = func(context.Context, xcache.Stats, error) {
 			atomic.AddUint32(&callsCnt, 1)
@@ -227,7 +233,7 @@ func testStatsWatcherFinalizerIsCalled(t *testing.T) {
 	// act
 	time.Sleep(50 * time.Millisecond)
 	runtime.GC()
-	time.Sleep(700 * time.Millisecond)
+	time.Sleep(interval + 200*time.Millisecond)
 
 	// assert
 	assertEqual(t, 0, cache.StatsCallsCount())
@@ -248,7 +254,7 @@ func BenchmarkStats_String(b *testing.B) {
 	b.ReportAllocs()
 	b.ResetTimer()
 
-	for range b.N {
+	for b.Loop() {
 		_ = stats.String()
 	}
 }

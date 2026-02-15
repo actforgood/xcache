@@ -8,6 +8,4 @@ bin/*
 *.exe~
 *.so
 
-cover*.out
-cover*.html
 build/sentinel*.conf

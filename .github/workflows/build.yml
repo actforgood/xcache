@@ -14,21 +14,21 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        go-version: [1.23.x, 1.24.x]
+        go-version: [1.25.x, 1.26.x]
         platform: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.platform }}
     
     steps:
     - name: Install Go
-      uses: actions/setup-go@v5
+      uses: actions/setup-go@v6
       with:
         go-version: ${{ matrix.go-version }}
 
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
 
     - name: Load cached dependencies
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: ~/go/pkg/mod
         key: ${{ runner.os }}-go-${{ matrix.go-version }}-${{ hashFiles('**/go.sum') }}
@@ -51,11 +51,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        go-version: [1.23.x, 1.24.x]
+        go-version: [1.25.x, 1.26.x]
 
     services:
       redis6:
-        image: redis:6.2.18
+        image: redis:6.2.21
         options: >-
           --health-cmd "redis-cli ping"
           --health-interval 10s
@@ -65,7 +65,7 @@ jobs:
           - 6379:6379
 
       redis7:
-        image: redis:7.4.4
+        image: redis:7.4.7
         options: >-
           --health-cmd "redis-cli ping"
           --health-interval 10s
@@ -76,15 +76,15 @@ jobs:
 
     steps:
     - name: Set up ${{ matrix.go-version }}
-      uses: actions/setup-go@v5
+      uses: actions/setup-go@v6
       with:
         go-version: ${{ matrix.go-version }}
 
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
 
     - name: Load cached dependencies
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: ~/go/pkg/mod
         key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}

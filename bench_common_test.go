@@ -26,7 +26,7 @@ func benchLoadSequential(cache xcache.Cache) func(b *testing.B) {
 		b.ReportAllocs()
 		b.ResetTimer()
 
-		for range b.N {
+		for b.Loop() {
 			if _, err := cache.Load(ctx, key); err != nil {
 				b.Error(err)
 			}
@@ -118,7 +118,7 @@ func benchTTLSequential(cache xcache.Cache) func(b *testing.B) {
 		b.ReportAllocs()
 		b.ResetTimer()
 
-		for range b.N {
+		for b.Loop() {
 			if _, err := cache.TTL(ctx, key); err != nil {
 				b.Error(err)
 			}
@@ -153,7 +153,7 @@ func benchStatsSequential(cache xcache.Cache) func(b *testing.B) {
 		b.ReportAllocs()
 		b.ResetTimer()
 
-		for range b.N {
+		for b.Loop() {
 			if _, err := cache.Stats(ctx); err != nil {
 				b.Error(err)
 			}

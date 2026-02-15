@@ -9,12 +9,12 @@ package xcache_test
 
 import (
 	"context"
+	"log/slog"
 	"os"
 	"strings"
 	"testing"
 
 	"github.com/actforgood/xcache"
-	"github.com/actforgood/xlog"
 )
 
 var redis6ConfigIntegration = xcache.RedisConfig{}
@@ -30,13 +30,11 @@ func init() {
 		redis6ConfigIntegration.MasterName = redisMasterName
 	}
 
-	// set the xlog.Logger Redis adapter
-	loggerOpts := xlog.NewCommonOpts()
-	loggerOpts.MinLevel = xlog.FixedLevelProvider(xlog.LevelInfo)
-	loggerOpts.Source = xlog.SourceProvider(5, 1)
-	logger := xlog.NewSyncLogger(os.Stdout, xlog.SyncLoggerWithOptions(loggerOpts))
-	redisLogger := xcache.NewRedisXLogger(logger)
-	xcache.SetRedis6Logger(redisLogger)
+	// set the slog.Logger Redis adapter
+	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
+		AddSource: true,
+	}))
+	xcache.SetRedis6Logger(xcache.NewRedisSLogger(logger))
 }
 
 func TestRedis6_integration(t *testing.T) {
