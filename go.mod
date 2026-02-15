@@ -1,12 +1,10 @@
 module github.com/actforgood/xcache
 
-go 1.23.0
-
-toolchain go1.24.3
+go 1.25
 
 require (
 	github.com/actforgood/xconf v1.10.0
-	github.com/actforgood/xerr v1.5.0
+	github.com/actforgood/xerr v1.6.0
 	github.com/actforgood/xlog v1.7.0
 	github.com/coocood/freecache v1.2.4
 	github.com/go-redis/redis/v8 v8.11.5

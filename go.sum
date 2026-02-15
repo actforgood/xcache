@@ -1,7 +1,7 @@
 github.com/actforgood/xconf v1.10.0 h1:SSsHt4aVNGSg9JvREbZafqlAi6gRcEvX5Y34MLMbaUM=
 github.com/actforgood/xconf v1.10.0/go.mod h1:R/2f4Yhz29FlzT6fXNmuVOOjo41tK8mLKfB2KaAjmOk=
-github.com/actforgood/xerr v1.5.0 h1:a6Kr6GwlROcQBlSepDH+cs84KTybRR+VSSzYbGwhJC0=
-github.com/actforgood/xerr v1.5.0/go.mod h1:JDmR4b/4+s30raZb1Rw9PNZiChbX5/onrf8nDypdriM=
+github.com/actforgood/xerr v1.6.0 h1:wsfuNWG7KR8BqXvdT8I336uQXf8VaFkUrdqUzLGaHnE=
+github.com/actforgood/xerr v1.6.0/go.mod h1:jZTmwzz3PNYvD9cRrc/DXPdYsUisnl93NUNCHq7aSJs=
 github.com/actforgood/xlog v1.7.0 h1:tkFpeszLeVAInUsIQlG94e47qGznS8dzXVUbcMi5/yc=
 github.com/actforgood/xlog v1.7.0/go.mod h1:sGPjwKbCziupeKhnBIPGqskHOd4l1gF4IC9F2CUFDK8=
 github.com/bsm/ginkgo/v2 v2.12.0 h1:Ny8MWAHyOepLGlLKYmXG4IEkioBysk6GpaRTLC8zwWs=
