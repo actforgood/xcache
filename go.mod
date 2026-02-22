@@ -7,7 +7,7 @@ require (
 	github.com/actforgood/xerr v1.6.0
 	github.com/coocood/freecache v1.2.5
 	github.com/go-redis/redis/v8 v8.11.5
-	github.com/redis/go-redis/v9 v9.17.3
+	github.com/redis/go-redis/v9 v9.18.0
 )
 
 require (
@@ -27,6 +27,7 @@ require (
 	go.etcd.io/etcd/api/v3 v3.6.8 // indirect
 	go.etcd.io/etcd/client/pkg/v3 v3.6.8 // indirect
 	go.etcd.io/etcd/client/v3 v3.6.8 // indirect
+	go.uber.org/atomic v1.11.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.27.1 // indirect
 	golang.org/x/net v0.50.0 // indirect
