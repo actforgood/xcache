@@ -5,7 +5,7 @@ go 1.25
 require (
 	github.com/actforgood/xconf v1.11.0
 	github.com/actforgood/xerr v1.6.0
-	github.com/coocood/freecache v1.2.5
+	github.com/coocood/freecache v1.2.7
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/redis/go-redis/v9 v9.17.3
 )
